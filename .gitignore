@@ -1,4 +1,4 @@
-.svn/*
+.svn/
 .idea
 .DS_Store
-Runtime
+Runtime/
