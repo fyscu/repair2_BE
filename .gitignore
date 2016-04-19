@@ -2,3 +2,4 @@
 .idea
 .DS_Store
 Runtime/
+/Application/Common/Conf/config.php
