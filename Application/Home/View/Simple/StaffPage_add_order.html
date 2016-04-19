@@ -1,0 +1,150 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="shortcut icon" href="fyicon.ico"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>飞扬报修系统</title>
+    <link href="__PUBLIC__/css/bootstrap.css" rel="stylesheet">
+    <link href="__PUBLIC__/css/style.css" rel="stylesheet">
+    <script type="text/javascript" src="__PUBLIC__/js/jquery-1.9.1.min.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/js/bootstrap.min.js"></script>
+    <!--[if lt IE 9]><script src="../../docs-assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+  <input type="hidden" id="token" value="@#$_GET['token']#@">
+    <div class="navbar navbar-fixed-bottom navbar-inverse" role="navigation">
+       <div class="container">   
+       	  <ul class="nav nav-pills">
+           <li  class="active"><a href="__APP__/Home/StaffPage/add?token=@#$_GET['token']#@">一键接单</a></li>
+            <li><a href="__APP__/Home/StaffPage/not?token=@#$_GET['token']#@">查看订单</a></li>
+            <li><a href="__APP__/Home/AccountPage/logout">退出</a></li>
+          </ul>
+       </div>
+    </div>
+    <div class="container">
+    <br>
+      <form class="form-info" >
+      <input type="hidden" id="user_id" value="@#$user.user_id#@">
+      <input type="hidden" id="vip" value="@#$type.type#@">
+        <h2 class="form-heading" id="user_name">@#$user.name#@</h2>
+        <h3>@#$user.phone#@ </h3>
+        <p><select class="form-control" name="user_computer" id="user_computer">
+            <foreach name="computer_list" item="vo" >
+            <option value="@#$vo.computer_id#@">@#$vo.brand#@@#$vo.model#@-@#$vo.buy_time|date="Y年m月",####@购买</option>
+            </foreach> 
+             
+          </select></p>
+     
+        <p><textarea name="description" class="form-control" id="description" cols="45" rows="3" placeholder="故障描述"></textarea>
+          <div id="error_description" class="text-danger"> ！请输入故障描述</div></p>
+        <p>&nbsp;<input type="checkbox" id="checkbox">&nbsp;<a id="repair_deal" class="text-info">一键接单须知</a></p>
+        <!-- Modal -->
+        <div class="modal fade" id="deal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myModalLabel">接单须知</h4>
+              </div>
+              <div class="modal-body">
+            <h4>一键接单流程：</h4>
+          
+               <p>提交订单 &raquo;  技术员联系客户进行维修 &raquo; 客户确认维修完成  &raquo; 完成</p>
+                <h4>注意事项：</h4>
+                <p>1.这是私活模式，不走系统分配流程，由技术员录入相关电脑维修信息，由用户确认完成。</p>
+                <p>2.订单一旦生成只能由该用户自己取消，技术员无法取消订单。</p>
+              </div>
+               <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal">确定</button>
+           </div>
+            </div><!-- /.modal-content -->
+          </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+        <button class="btn btn-lg btn-primary btn-block" type="button" id="repair">一键接单</button>
+      </form>
+    </div>
+
+<script type="text/javascript">
+$(document).ready(function(){
+    var token=$("#token").val();
+  $("#error_description").hide();
+    $("#checkbox").attr("checked",'true');
+//按下回车
+  $("body").keydown(function() {
+        if (event.keyCode == "13" && $("#checkbox").is(":checked")) {//keyCode=13是回车键
+          $("#repair").removeClass("disabled");
+      if($("#description").val()==""){$("#error_description").show();}
+      else {
+        $("#error_description").hide();
+            $("#repair").text('处理中..');
+            var description=$("#description").val();
+            var computer_id=$("#user_computer option:selected").val();
+            var user_id=$("#user_id").val();
+            var vip=$("#vip").val();
+
+        $.post("__APP__/Home/Staff/add?token="+token, {user_id:user_id,vip:vip,description:description,computer_id:computer_id},
+          function(data){
+            if(data.status==0){
+              alert(data.in);
+                    $("#repair").text('一键接单')
+            }
+            else{
+                    $("#repair").text('接单成功!跳转中..');
+                  window.location.href="__APP__/Home/StaffPage/not?token="+token;//报修成功跳转
+                }
+        });
+      }
+        }
+    });
+
+//点击报修协议则弹出框
+  $("#repair_deal").on("click",function(){
+    $("#deal").modal();
+  });
+  
+  //维修协议的选框被选中选中，保修按钮才有点击效果
+  $("#checkbox").on("change",function(){
+    if($("#checkbox").is(":checked")){
+      $("#repair").removeClass("disabled");
+    }
+    else {$("#repair").addClass("disabled");}
+  });
+
+  $("#repair").on("click",function(){
+    if($("#description").val()==""){$("#error_description").show();}
+    else {
+      $("#error_description").hide();
+          $("#repair").text('处理中..');
+          var description=$("#description").val();
+          var computer_id=$("#user_computer option:selected").val();
+           var user_id=$("#user_id").val();
+            var vip=$("#vip").val();
+
+      $.post("__APP__/Home/Staff/handle?token="+token, {user_id:user_id,vip:vip,description:description,computer_id:computer_id},
+        function(data){
+          if(data.status==0){
+            alert(data.in);
+                  $("#repair").text('一键接单')
+          }
+          else{
+                  $("#repair").text('报修成功,跳转中..');
+                window.location.href="__APP__/Home/StaffPage/not?token="+token;//报修成功跳转
+              }
+      });
+    }
+  });
+});
+</script>
+
+</body>
+</html>

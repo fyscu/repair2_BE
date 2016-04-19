@@ -1,0 +1,99 @@
+body {
+  padding-top: 20px;
+  padding-bottom: 40px;
+  background-color: #eee;
+  font-family: "微软雅黑","黑体", "宋体";
+  font-size: 16px;
+}
+#search{
+	/*width: 80%;*/
+	padding-top: 150px;
+	padding-left: 10px;
+	padding-right: 10px;
+}
+#page{
+	font-size: 24px;
+	color: black;
+	letter-spacing: 6px;
+	padding-left: 20px;
+}
+#page a{
+		color: black;
+
+}
+h3 {
+	font-family: "微软雅黑","黑体", "宋体";
+}
+h4 {
+	font-family: "微软雅黑","黑体", "宋体";
+}
+h3 a{
+	color:#999;
+	font-family: "微软雅黑","黑体", "宋体";
+	font-size:16px;
+	text-decoration:none;
+}
+h3 a:hover{
+	color:#000;
+	text-decoration:none;
+}
+.tips{
+    margin-top:10px;
+}
+.order-count{
+    color:red;
+}
+.form-info {
+  max-width: 330px;
+  padding: 20px;
+  margin: 0 auto;
+}
+.btn-info {
+	max-width: 330px;
+	margin: 0 auto;
+}
+.form-info .form-heading,
+.form-info .checkbox {
+  margin-bottom: 10px;
+}
+
+.form-info .form-control {
+  position: relative;
+  font-size: 16px;
+  height: auto;
+  padding: 10px;
+  -webkit-box-sizing: border-box;
+     -moz-box-sizing: border-box;
+          box-sizing: border-box;
+}
+.form-info .form-control:focus {
+  z-index: 2;
+}
+@media (min-width: 768px) {
+#search{
+	/*width: 80%;*/
+	padding-top: 200px;
+	padding-left: 10px;
+	padding-right: 10px;
+}
+.container1 {
+    max-width: 730px;
+	margin:0 auto;
+  }
+}
+.jumbotron {
+	width:95%;
+	margin:0 auto;
+	font-size:14px;
+	background-color:#FFF;
+	text-align: left;
+	border-bottom: 2px solid #ccc;
+	border-radius: 6px;
+}
+#add_computer{
+	max-width:300px;
+	margin:0 auto;
+}
+#myModal{
+	padding-top:100px;
+}

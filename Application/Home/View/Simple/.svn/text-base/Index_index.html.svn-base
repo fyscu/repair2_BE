@@ -1,0 +1,241 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="shortcut icon" href="fyicon.ico"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>飞扬报修系统</title>
+    <link href="__PUBLIC__/css/bootstrap.css" rel="stylesheet">
+    <link href="__PUBLIC__/css/style.css" rel="stylesheet">
+    <script type="text/javascript" src="__PUBLIC__/js/jquery-1.9.1.min.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/js/bootstrap.min.js"></script>
+    <!--[if lt IE 9]><script src="../../docs-assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+  <input type="hidden" id="access_token" value="@#$_GET['access_token']#@">
+    <div class="navbar navbar-fixed-bottom navbar-inverse" role="navigation">
+       <div class="container">   
+          <ul class="nav nav-pills">
+            <li class="active"><a href="__APP__/Home/Index/index">飞扬报修</a></li>
+            <li><a href="__APP__/Home/IndexPage/order">查看订单</a></li>
+            <li><a href="__APP__/Home/AccountPage/logout">退出</a></li>
+          </ul>
+       </div>
+    </div>
+    <div class="container">
+    <br>
+      <form class="form-info" >
+        <h2 class="form-heading" id="user_name">@#$user.name#@</h2>
+        <h3>@#$user.phone#@ <a href="__APP__/Home/IndexPage/set">修改</a></h3>
+        <p><select class="form-control" name="user_computer" id="user_computer">
+            <foreach name="computer_list" item="vo" >
+            <option value="@#$vo.computer_id#@">@#$vo.brand#@@#$vo.model#@-@#$vo.buy_time|date="Y年m月",####@购买</option>
+            </foreach> 
+            <option value="-1">新增</option>        
+          </select></p>
+        <!-- Modal -->
+        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h3 class="modal-title" id="myModalLabel">新增电脑</h3>
+              </div>
+              <div class="modal-body">
+              <div id="add_computer">
+                <p><input class="form-control"  type="text" name="brand" id="brand" placeholder="品牌">
+                  <div id="error_brand" class="text-danger"> ！请输入品牌</div></p>
+                <p><input class="form-control"  type="text" name="model" id="model" placeholder="型号">
+                  <div id="error_model" class="text-danger"> ！请输入型号</div></p>
+                <p><input class="form-control"  type="text" name="buy_time" id="buy_time" placeholder="购买时间例如'201401'">
+                  <div id="error_buy_time" class="text-danger"> ！请输入购买年月的正确格式如"201401"</div></p>
+                <p><button class="btn-info btn btn-primary btn-block" type="button" id="submit_new_computer">新 增</button></p>
+                </div>            
+              </div>
+            </div><!-- /.modal-content -->
+          </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+        <p><textarea name="description" class="form-control" id="description" cols="45" rows="3" placeholder="故障描述"></textarea>
+          <div id="error_description" class="text-danger"> ！请输入故障描述</div></p>
+        <p>&nbsp;<input type="checkbox" id="checkbox">&nbsp;<a id="repair_deal" class="text-info">我已阅读并同意飞扬报修协议</a></p>
+        <!-- Modal -->
+        <div class="modal fade" id="deal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myModalLabel">飞扬报修协议</h4>
+              </div>
+              <div class="modal-body">
+            <h4>报修流程：</h4>
+            <img src="__PUBLIC__/pic/liuchengtu1.png" width="270px;" height="52px;"><img src="__PUBLIC__/pic/liuchengtu.png" width="70px;" height="52px;">
+                <!--<p>提交订单 &raquo; 待技术员确认 &raquo; 技术员联系客户进行维修 &raquo; 维修完成</p>-->
+                <h4>注意事项：</h4>
+                <p>1.由于技术员都在江安校区，所以望江/华西校区报修同学须送修到江安校区。</p>
+                <p>2.飞扬报修系统，由四川大学飞扬俱乐部研发、维护和日常运营，旨在为川大师生提供免费、高效的电脑维修服务。</p>
+                <p>3.请您务必在填写时使用真实信息，以便于我们可以及时为您提供服务。</p>
+        <p>4.飞扬承诺：将为您的个人信息严格保密，绝对不会在未经用户允许的情况下将信息泄露给第三方。</p>
+
+              </div>
+               <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal">确定</button>
+           </div>
+            </div><!-- /.modal-content -->
+          </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+        <button class="btn btn-lg btn-primary btn-block" type="button" id="repair">一键报修</button>
+         <div class="tips">1.本周已接机:<span class="order-count">@#$order_count#@</span>次,@#$tips#@</div>
+         <div class="tips">2.由于技术员都在江安校区，所以望江/华西校区报修同学须送修到江安校区。</div>
+      </form>
+     
+    </div>
+
+<script type="text/javascript">
+$(document).ready(function(){
+    var access_token=$("#access_token").val();
+  $("#error_brand").hide();
+  $("#error_model").hide();
+  $("#error_buy_time").hide();
+  $("#error_description").hide();
+  $("#checkbox").attr("checked",'true');
+   var repair_status="<?php echo $repair_status;?>";
+  
+    //选择新增则弹出框
+  $("#user_computer").change(function(){
+    var new_computer_value=$("#user_computer option:selected").val();
+    if(new_computer_value==-1){  
+    $("#myModal").modal();
+    $("#user_computer option:first").attr("selected",true);//用户如果取消新增则显示之前的选项被选中，而不是新增被选中
+    }
+  });
+    
+  //提交新增电脑
+  $("#submit_new_computer").on("click",function(){
+  var brand=$("#brand").val();
+    var model=$("#model").val();
+    var buy_time=$("#buy_time").val();
+    //判断用户是否内容都输入了
+    if(brand==""){$("#error_brand").show();} else {$("#error_brand").hide();}
+    if(model==""){$("#error_model").show();} else {$("#error_model").hide();}
+    if( !buy_time.match(/^\d{4}(1[0-2]|0?\d)$/)){$("#error_buy_time").show();} else {$("#error_buy_time").hide();}
+    if(brand!="" && model!="" && buy_time.match(/^\d{4}(1[0-2]|0?\d)$/)){
+      //若均填写隐藏提示信息
+      $("#error_brand").hide();
+      $("#error_model").hide();
+      $("#error_buy_time").hide();
+      $("#submit_new_computer").text('新增中..');
+      $.post("__APP__/Home/Handle/registerpc?access_token="+access_token, {brand:brand,model:model,buy_time:buy_time},
+        function(data){
+            console.log(data)
+         if(data.status==0){
+          alert('新增失败');
+             $("#submit_new_computer").text('新增');
+        }else if(data.status==-1){
+          alert('时间格式错误,请重新输入如201401');
+          $("#submit_new_computer").text('新增');
+        }else if(data.status==-2){
+          alert('时间范围错误。范围:200501至今');
+          $("#submit_new_computer").text('新增');
+        }else{
+          $("#submit_new_computer").text('新增成功!');
+          $("#user_computer").prepend('<option value="'+data.computer_id+'">'+data.brand+data.model+'-'+data.buy_time+'</option>');   
+          //为Select插入一个Option(第一个位置)
+          $('#user_computer option[value="'+data.computer_id+'"]').attr("selected",true);
+                $("#myModal").modal('hide');
+          $("#brand").val("");
+          $("#model").val("");
+          $("#buy_time").val("");
+          $("#submit_new_computer").text('新增');
+        }
+      });
+    }
+  });
+
+//点击报修协议则弹出框
+  $("#repair_deal").on("click",function(){
+    $("#deal").modal();
+  });
+  
+  //维修协议的选框被选中选中，保修按钮才有点击效果
+  $("#checkbox").on("change",function(){
+    if($("#checkbox").is(":checked")){
+      $("#repair").removeClass("disabled");
+    }
+    else {$("#repair").addClass("disabled");}
+  });
+
+//按下回车
+  $("body").keydown(function() {
+        if (event.keyCode == "13" && $("#checkbox").is(":checked")) {//keyCode=13是回车键
+          $("#repair").removeClass("disabled");
+         
+      if($("#description").val()==""){$("#error_description").show();}else if(repair_status=="1"){
+          alert('本周已接机:<?php echo $order_count."次，".$tips;?>');
+          
+      }
+      else {
+        $("#error_description").hide();
+            $("#repair").text('处理中..');
+            var description=$("#description").val();
+            var computer_id=$("#user_computer option:selected").val();
+          if(computer_id==-1){
+              alert('请选择一台电脑');
+              $("#repair").text('一键报修')
+              return;
+          }
+        $.post("__APP__/Home/Handle/handle?access_token="+access_token, {description:description,computer_id:computer_id},
+          function(data){
+            if(data.status==0){
+              alert(data.info);
+                    $("#repair").text('一键报修')
+            }
+            else{
+                    $("#repair").text('报修成功!跳转中..');
+                  window.location.href="__APP__/Home/Index/order";//报修成功跳转
+                }
+        });
+      }
+        }
+    });
+  $("#repair").on("click",function(){
+    if($("#description").val()==""){$("#error_description").show();}else if(repair_status=="1"){
+          alert('本周已接机:<?php echo $order_count."次，".$tips;?>');
+          
+      }
+    else {
+      $("#error_description").hide();
+          $("#repair").text('处理中..');
+          var description=$("#description").val();
+          var computer_id=$("#user_computer option:selected").val();
+        if(computer_id==-1){
+            alert('请选择一台电脑');
+            $("#repair").text('一键报修')
+            return;
+        }
+      $.post("__APP__/Home/Handle/handle?access_token="+access_token, {description:description,computer_id:computer_id},
+        function(data){
+          if(data.status==0){
+            alert(data.in);
+                  $("#repair").text('一键报修');
+          }
+          else{
+                  $("#repair").text('报修成功,跳转中..');
+                window.location.href="__APP__/Home/IndexPage/order";//报修成功跳转
+              }
+      });
+    }
+  });
+});
+</script>
+
+</body>
+</html>
